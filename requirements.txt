@@ -1,0 +1,9 @@
+librosa
+matplotlib
+scipy
+seaborn
+IPython
+scikit-sklearn
+tensorflow
+icecream
+pandas
