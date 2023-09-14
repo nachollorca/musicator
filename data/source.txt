@@ -1,3 +1,14 @@
-place the content of the GTZAN dataset here
+Place the content of the GTZAN dataset here. You can download it from http://marsyas.info/
+I resource is frequently down. If you are in real need of the dataset, try to drop me a message in my GitHub
 
-you can download it from http://marsyas.info/
+Structure should be:
+    - /genres_oririginal/
+        -blues/
+        -classical/
+        -...
+    - /images_oririginal/
+        -blues/
+        -classical/
+        -...
+    - /features_3_sec.csv
+    - /features_30_sec.csv
