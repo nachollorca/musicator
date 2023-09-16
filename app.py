@@ -73,7 +73,6 @@ with why:
 # ACTUAL CODE
 with go:
     upload = st.file_uploader("Upload a song",type=["wav", "mp3"])
-    st.write(upload)
     classify = st.button(":dizzy: **Classify** :dizzy:", use_container_width=True)
 
     if classify and upload is not None:
