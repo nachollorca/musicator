@@ -14,6 +14,8 @@ class Song:
         self.standardized_features = None
 
     def load(self) -> None:
+        filetype = self.file.name[-3:]
+        print(filetype)
         audio = AudioSegment.from_file(self.file, format="wav")
 
         # Get middle minute if it is longer than 60 seconds
@@ -131,4 +133,3 @@ class Song:
         standardized_features = pd.DataFrame(standardized_features, columns=self.features.columns)
         self.standardized_features = standardized_features
         return standardized_features
-
