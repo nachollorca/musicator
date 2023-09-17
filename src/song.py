@@ -6,17 +6,16 @@ import joblib
 
 
 class Song:
-    def __init__(self, file):
-        self.file = file
+    def __init__(self, file_path):
+        self.file_path = file_path
         self.scaler = joblib.load("checkpoints/scaler.pkl")
         self.working_file = "tmp/working_file.wav"
         self.features = None
         self.standardized_features = None
 
     def load(self) -> None:
-        filetype = self.file.name[-3:]
-        print(filetype)
-        audio = AudioSegment.from_file(self.file, format="wav")
+        filetype = self.file_path.split(".")[-1]
+        audio = AudioSegment.from_file(self.file_path, format=filetype)
 
         # Get middle minute if it is longer than 60 seconds
         if len(audio) > 60000:
@@ -25,6 +24,7 @@ class Song:
             end_time = len(audio) // 2 + 30000
             audio = audio[start_time:end_time]
 
+        # export always as .wav (even if input is mp3)
         audio.export(self.working_file, format="wav")
         pass
 

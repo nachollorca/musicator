@@ -2,7 +2,7 @@ import streamlit as st
 from src.song import Song
 from src.model import NeuralNetworkModel
 import time
-
+import io
 
 st.set_page_config(layout="centered", page_title="Musicator")
 
@@ -16,11 +16,11 @@ with st.sidebar:
      - :floppy_disk: [Original dataset](https://huggingface.co/datasets/marsyas/gtzan/blob/main/data/genres.tar.gz)
 
     ### :notes: Download Creative Common songs to classify
-     - Nothing
-     - More nothing
+     - [Free Music Archive](https://freemusicarchive.org/)
+     - [Pixbay](https://pixabay.com/music/)
 
-    ### :man: About me
-    My name is Nacho, and I enjoy doing things with data. You can find some other projects in my [GitHub]().
+    ### :call_me_hand: About me
+    I am Nacho, and I enjoy doing software stuff with data and ML. You can check some other projects in my [GitHub](https://www.github.com/nachollorca).
     """
 
 
@@ -52,7 +52,7 @@ with why:
     """
     The model may fail to classify songs into the genre you believe it belongs because...
     
-    ### GTZAN is far from perfect
+    ### :confounded: GTZAN is far from perfect
     The GTZAN dataset has plenty of flaws. If it is used, it is because of the absence of other viable datasets, due to music labels being reticent to give their product free for research. Even for GTZAN, the ways in which the dataset was gathered could be brought in to question... To mention some of its defects:
      - 1000 tracks are quite few for machine learning problems
      - Some audios are distorted
@@ -60,7 +60,7 @@ with why:
      - Some audios are different extracts from the same song (or different versions)
      - Some artists are overrepresented in their genres (35% of the reggae labeled audios belong to Bob Marley!)
     
-    ### Musicator answers an ill-posed problem
+    ### :question: Musicator answers an ill-posed problem
     The task here is inherently difficult to solve or lacks a unique solution due to various factors, mainly:
     - **Ambiguity of Genre Labels**: Music genre labels can be somewhat subjective and may not have universally agreed-upon definitions. Different people may classify the same piece of music into different genres based on their interpretations and criteria.
     - **Overlapping Genres**: Many songs can belong to multiple genres simultaneously.
@@ -72,14 +72,46 @@ with why:
 
 # ACTUAL CODE
 with go:
-    upload = st.file_uploader("Upload a song",type=["wav", "mp3"])
-    classify = st.button(":dizzy: **Classify** :dizzy:", use_container_width=True)
+    """
+    You can try with one of these samples...
+    """
 
-    if classify and upload is not None:
+    buttons = []
+    for i in range(3):
+        with st.container():
+            col1, col2 = st.columns(2)
+            sample = f"media/sample{i}.wav"
+            col1.audio(sample)
+            buttons.append(col2.button(f"Select sample {i}", key=i, use_container_width=True))
+
+    if True in buttons:
+        selected = buttons.index(True)
+        selected = f"media/sample{selected}.wav"
+        song = Song(selected)
+
+    """
+    ... or upload your own song!
+    """
+
+    upload = st.file_uploader("(.mp3 files would be converted to .wav, but predictive power is severely affected)",type=["wav", "mp3"])
+    if upload is not None:
+        with open(f"tmp/{upload.name}", "wb") as f:
+            f.write(upload.read())
+        selected = f"tmp/{upload.name}"
+        song = Song(selected)
+
+    if "song" in locals():
+        f"""
+        ### Ready!
+        This is the seleted audio: {selected}
+        """
+        st.audio(selected)
+
+        #classify = st.button(":dizzy: **Classify** :dizzy:", type = "primary", use_container_width=True)
+        #if classify:
 
         with st.status("On it...", expanded=True) as status:
             st.write(":musical_note: Fetching song")
-            song = Song(upload)
             song.load()
             time.sleep(1)
 
@@ -102,3 +134,4 @@ with go:
             status.update(label=":tada: **et voilà!** :tada:", state="complete", expanded=False)
 
         st.dataframe(out, use_container_width=True)
+            #"song" in locals()
